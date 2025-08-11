@@ -1,0 +1,133 @@
+import 'package:sqflite/sqflite.dart';
+import 'package:path/path.dart';
+
+class DBHelper {
+  static  Database? _db; 
+
+  Future<Database> get db async {
+    if (_db != null) return _db!;
+    _db = await initDB();
+    return _db!;
+  }
+
+  Future<Database> initDB() async {
+  String dbPath = await getDatabasesPath();
+  String path = join(dbPath, 'quiz.db');
+
+  return await openDatabase(
+    path,
+    version: 2,
+    onCreate: (Database db, int version) async {
+      // Create 'questions' table
+      await db.execute('''
+        CREATE TABLE questions (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          question TEXT,
+          option1 TEXT,
+          option2 TEXT,
+          option3 TEXT,
+          option4 TEXT,
+          answer TEXT
+        )
+      ''');
+
+      // Create 'users' table
+      await db.execute('''
+        CREATE TABLE users (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          username TEXT,
+          password TEXT
+        )
+      ''');
+
+      // Insert initial 7 questions
+      await db.insert('questions', {
+        'question': 'What is the capital of France?',
+        'option1': 'Berlin',
+        'option2': 'Madrid',
+        'option3': 'Paris',
+        'option4': 'Rome',
+        'answer': 'Paris',
+      });
+
+      await db.insert('questions', {
+        'question': 'Which planet is known as the Red Planet?',
+        'option1': 'Earth',
+        'option2': 'Mars',
+        'option3': 'Jupiter',
+        'option4': 'Venus',
+        'answer': 'Mars',
+      });
+
+      await db.insert('questions', {
+        'question': "Who wrote the play 'Romeo and Juliet'?",
+        'option1': 'Charles Dickens',
+        'option2': 'William Shakespeare',
+        'option3': 'Mark Twain',
+        'option4': 'Jane Austen',
+        'answer': 'William Shakespeare',
+      });
+
+      await db.insert('questions', {
+        'question': 'What is the boiling point of water at sea level?',
+        'option1': '50°C',
+        'option2': '100°C',
+        'option3': '150°C',
+        'option4': '200°C',
+        'answer': '100°C',
+      });
+
+      await db.insert('questions', {
+        'question': 'Which programming language is used to develop Flutter apps?',
+        'option1': 'Java',
+        'option2': 'Kotlin',
+        'option3': 'Dart',
+        'option4': 'Swift',
+        'answer': 'Dart',
+      });
+
+      await db.insert('questions', {
+        'question': 'Who was the first person to walk on the moon?',
+        'option1': 'Neil Armstrong',
+        'option2': 'Yuri Gagarin',
+        'option3': 'Buzz Aldrin',
+        'option4': 'Rakesh Sharma',
+        'answer': 'Neil Armstrong',
+      });
+
+      await db.insert('questions', {
+        'question': 'What is the chemical symbol for gold?',
+        'option1': 'Go',
+        'option2': 'Au',
+        'option3': 'Gd',
+        'option4': 'Ag',
+        'answer': 'Au',
+      });
+    },
+  );
+}
+
+  Future<List<Map<String, dynamic>>> getQuestions() async {
+    final dbClient = await db;
+    return await dbClient.query('questions');
+  }
+  Future<int> insertusers(String username, String password) async {
+    final dbClient = await db;
+   return await dbClient.insert('users', {
+      'username': username,
+      'password': password,
+   });
+  }
+
+  Future<Map<String, dynamic>?> getUser(String username, String password) async {
+    final dbClient = await db;
+    final ans = await dbClient.query(
+      'users',
+      where: 'username = ? AND password = ?',
+      whereArgs: [username, password],
+    );
+    return ans.isNotEmpty ? ans.first : null;
+  }
+     
+
+}
