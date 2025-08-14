@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       title: 'Simple Quiz App',
       debugShowCheckedModeBanner: false,
       theme: ThemeData.dark().copyWith(
-        colorScheme: ColorScheme.dark(
+        colorScheme: ColorScheme.dark(   
           primary: Colors.tealAccent,
           secondary: Colors.tealAccent,
           surface: Color(0xFF121212),

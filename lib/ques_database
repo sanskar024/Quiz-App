@@ -31,7 +31,7 @@ class DBHelper {
         )
       ''');
 
-      // Create 'users' table
+      
       await db.execute('''
         CREATE TABLE users (
           id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -40,7 +40,6 @@ class DBHelper {
         )
       ''');
 
-      // Insert initial 7 questions
       await db.insert('questions', {
         'question': 'What is the capital of France?',
         'option1': 'Berlin',
